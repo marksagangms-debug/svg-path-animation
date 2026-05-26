@@ -212,11 +212,27 @@ Scroll mode is still available by setting `ms_path_mode="scroll"` or by omitting
 - `ms-path-trigger=".msc-page"`: dashed alias for `ms_path_trigger`.
 - `ms_path_scroll_distance="1800"`: spreads the path draw over 1800px of scroll. Use this when the trigger section is short and the animation feels too fast.
 - `ms-path-scroll-distance`: dashed alias for `ms_path_scroll_distance`.
+- `ms_path_pin="true"`: pins the trigger section while the scroll animation plays. This is useful when the section is visually short but the path needs more scroll room.
+- `ms_path_pin_spacing="false"`: disables the spacer ScrollTrigger adds for pinned sections. Leave this unset unless you intentionally want the following content to move underneath the pinned section.
+- `ms-path-pin` and `ms-path-pin-spacing`: dashed aliases.
 
 These are built-in defaults, so you usually do not need to add them:
 
 - `ms_path_start="top top"`: starts when the trigger top reaches the viewport top.
 - `ms_path_end="bottom bottom"`: ends when the trigger bottom reaches the viewport bottom.
+
+For short sections, use this pattern:
+
+```html
+ms_path_mode="scroll"
+ms_path_trigger=".your-short-section"
+ms_path_start="top 70%"
+ms_path_scroll_distance="1800"
+ms_path_scrub="0.6"
+ms_path_pin="true"
+```
+
+Increase `ms_path_scroll_distance` for a slower draw. Increase `ms_path_scrub` slightly for a softer catch-up feel.
 
 Advanced overrides are still supported:
 

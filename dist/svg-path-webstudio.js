@@ -327,6 +327,8 @@
       mobileScroll: normalizeMobileScroll(
         readString(path, pathAttr("mobile-scroll"), "play")
       ),
+      pin: readBoolean(path, pathAttr("pin"), false),
+      pinSpacing: readBoolean(path, pathAttr("pin-spacing"), true),
       start: readString(
         path,
         pathAttr("start"),
@@ -430,6 +432,8 @@
         scrub: options.scrub,
         mobileScroll: options.mobileScroll,
         mobilePlay: useMobilePlay,
+        pin: options.pin,
+        pinSpacing: options.pinSpacing,
         duration: options.duration,
         delay: options.delay,
         repeat: options.repeat,
@@ -479,6 +483,8 @@
           trigger: options.trigger || undefined,
           start: options.start,
           end: options.end,
+          pin: options.pin,
+          pinSpacing: options.pinSpacing,
           scrub: options.scrub,
           invalidateOnRefresh: true
         }

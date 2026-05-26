@@ -26,7 +26,7 @@
       }
 
       .msc-path-layer {
-        position: fixed;
+        position: absolute;
         inset: 0;
         z-index: 0;
         pointer-events: none;
@@ -45,13 +45,25 @@
 
       .hero,
       .section {
+        position: relative;
         min-height: 100svh;
         display: grid;
         align-items: center;
+        overflow: hidden;
         padding: 4rem 1.5rem;
       }
 
+      .hero {
+        min-height: 110svh;
+      }
+
+      .msc-scroll-section {
+        min-height: 150svh;
+      }
+
       .inner {
+        position: relative;
+        z-index: 1;
         width: min(1080px, 100%);
         margin: 0 auto;
       }
@@ -99,6 +111,14 @@
         box-shadow: 0 22px 60px rgba(84, 48, 31, 0.08);
       }
 
+      .msc-hero-path svg {
+        opacity: 0.78;
+      }
+
+      .msc-scroll-path svg {
+        opacity: 0.9;
+      }
+
       @media (max-width: 820px) {
         .section .inner {
           grid-template-columns: 1fr;
@@ -110,46 +130,48 @@
     <!-- Paste this script once in Webstudio Project Settings > Custom Code > Before </body>. -->
     <script src="./dist/svg-path-webstudio.js"></script>
 
-    <!-- Paste this SVG in a Webstudio HTML Embed. -->
-    <div class="msc-path-layer" aria-hidden="true">
-      <svg viewBox="0 0 1440 1000" preserveAspectRatio="none">
-        <defs>
-          <linearGradient
-            id="msc-scroll-gradient"
-            x1="420"
-            y1="80"
-            x2="650"
-            y2="930"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop offset="0%" stop-color="#ffd166"></stop>
-            <stop offset="35%" stop-color="#ff6a3d"></stop>
-            <stop offset="68%" stop-color="#ff2fb3"></stop>
-            <stop offset="100%" stop-color="#d83bd2"></stop>
-          </linearGradient>
-        </defs>
-
-        <path
-          ms-path
-          ms-path-mode="scroll"
-          ms-path-trigger=".msc-page"
-          ms-path-scrub="true"
-          ms-path-gradient="#msc-scroll-gradient"
-          ms-path-gradient-center="720 500"
-          fill="none"
-          stroke="url(#msc-scroll-gradient)"
-          stroke-width="12"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M 420 80 C 540 130, 700 180, 800 280 S 1080 470, 970 610 S 510 760, 650 930"
-        ></path>
-      </svg>
-    </div>
-
     <main class="msc-page">
       <section class="hero">
+        <!-- Static SVG embed test: this should loop without blocking later scroll paths. -->
+        <div class="msc-path-layer msc-hero-path" aria-hidden="true">
+          <svg viewBox="0 0 1440 1000" preserveAspectRatio="none">
+            <defs>
+              <linearGradient
+                id="msc-static-gradient"
+                x1="260"
+                y1="120"
+                x2="1060"
+                y2="850"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0%" stop-color="#58c7f3"></stop>
+                <stop offset="38%" stop-color="#ffcd4b"></stop>
+                <stop offset="72%" stop-color="#f45d48"></stop>
+                <stop offset="100%" stop-color="#9a58df"></stop>
+              </linearGradient>
+            </defs>
+
+            <path
+              ms-path
+              ms-path-mode="static"
+              ms-path-repeat="infinite"
+              ms-path-duration="3.2"
+              ms-path-tail="0.28"
+              ms-path-offset="12%"
+              ms-path-gradient="#msc-static-gradient"
+              ms-path-gradient-center="720 500"
+              fill="none"
+              stroke="url(#msc-static-gradient)"
+              stroke-width="14"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M 160 690 C 320 300, 520 210, 710 420 S 1040 760, 1260 250"
+            ></path>
+          </svg>
+        </div>
+
         <div class="inner" ms-reveal ms-reveal-stagger="0.08">
-          <h1>SVG path animation for Webstudio.</h1>
+          <h1>Static path in the hero.</h1>
         </div>
       </section>
 
@@ -166,12 +188,52 @@
         </div>
       </section>
 
-      <section class="section">
+      <section class="section msc-scroll-section">
+        <!-- Scroll SVG embed test: this should draw while this section scrolls into view. -->
+        <div class="msc-path-layer msc-scroll-path" aria-hidden="true">
+          <svg viewBox="0 0 1440 1000" preserveAspectRatio="none">
+            <defs>
+              <linearGradient
+                id="msc-scroll-gradient"
+                x1="420"
+                y1="80"
+                x2="650"
+                y2="930"
+                gradientUnits="userSpaceOnUse"
+              >
+                <stop offset="0%" stop-color="#ffd166"></stop>
+                <stop offset="35%" stop-color="#ff6a3d"></stop>
+                <stop offset="68%" stop-color="#ff2fb3"></stop>
+                <stop offset="100%" stop-color="#d83bd2"></stop>
+              </linearGradient>
+            </defs>
+
+            <path
+              ms-path
+              ms-path-mode="scroll"
+              ms-path-trigger=".msc-scroll-section"
+              ms-path-start="top 70%"
+              ms-path-scroll-distance="1800"
+              ms-path-scrub="0.6"
+              ms-path-pin="true"
+              ms-path-gradient="#msc-scroll-gradient"
+              ms-path-gradient-center="720 500"
+              fill="none"
+              stroke="url(#msc-scroll-gradient)"
+              stroke-width="12"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M 420 80 C 540 130, 700 180, 800 280 S 1080 470, 970 610 S 510 760, 650 930"
+            ></path>
+          </svg>
+        </div>
+
         <div class="inner" ms-reveal ms-reveal-stagger="0.08">
           <div>
-            <h2>Control the timing.</h2>
+            <h2>Scroll path in the middle.</h2>
             <p>
-              Change the trigger, scrub, path direction, and gradient rotation without editing the JavaScript.
+              This second SVG uses scroll mode and a section-specific trigger, while the hero SVG continues in
+              static mode above it.
             </p>
           </div>
           <div class="visual"></div>
