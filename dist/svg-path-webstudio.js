@@ -409,7 +409,7 @@
     var useMobilePlay;
 
     if (path.dataset[READY_FLAG] === "true" || !path.getTotalLength) {
-      return;
+      return false;
     }
 
     length = path.getTotalLength();
@@ -509,6 +509,7 @@
     }
 
     path.dataset[READY_FLAG] = "true";
+    return true;
   }
 
   function getRevealOptions(el) {
@@ -529,7 +530,7 @@
     var targets;
 
     if (el.dataset[REVEAL_READY_FLAG] === "true") {
-      return;
+      return false;
     }
 
     options = getRevealOptions(el);
@@ -550,6 +551,7 @@
     });
 
     el.dataset[REVEAL_READY_FLAG] = "true";
+    return true;
   }
 
   function showReducedMotionFallback(paths, reveals) {
@@ -596,7 +598,7 @@
     window.setTimeout(refreshScrollTrigger, 500);
   }
 
-  function initAll() {
+  function initAll(forceRefresh) {
     var paths = Array.prototype.slice.call(
       document.querySelectorAll(
         PATH_SELECTOR_ATTRS.map(function (attr) {
@@ -615,6 +617,7 @@
       "(prefers-reduced-motion: reduce)"
     ).matches;
     var needsScrollTrigger = reveals.length > 0;
+    var initializedCount = 0;
 
     if (!paths.length && !reveals.length) {
       return;
@@ -637,9 +640,13 @@
           window.gsap.registerPlugin(window.ScrollTrigger);
           configureScrollTrigger();
         }
-        paths.forEach(initPath);
-        reveals.forEach(initReveal);
-        if (needsScrollTrigger) {
+        paths.forEach(function (path) {
+          initializedCount += initPath(path) ? 1 : 0;
+        });
+        reveals.forEach(function (reveal) {
+          initializedCount += initReveal(reveal) ? 1 : 0;
+        });
+        if (needsScrollTrigger && (forceRefresh || initializedCount > 0)) {
           scheduleScrollTriggerRefresh();
         }
       })
@@ -649,11 +656,39 @@
   }
 
   window.msPathRefresh = function () {
-    initAll();
-    scheduleScrollTriggerRefresh();
+    initAll(true);
   };
 
   window.dvPathRefresh = window.msPathRefresh;
+
+  function nodeMatchesAnimationSelector(node) {
+    var selector;
+
+    if (!node || node.nodeType !== 1) {
+      return false;
+    }
+
+    selector = PATH_SELECTOR_ATTRS.concat(REVEAL_ATTRS)
+      .map(function (attr) {
+        return "[" + attr + "]";
+      })
+      .join(",");
+
+    return (
+      (node.matches && node.matches(selector)) ||
+      (node.querySelector && Boolean(node.querySelector(selector)))
+    );
+  }
+
+  function mutationNeedsInit(mutation) {
+    if (mutation.type === "attributes") {
+      return nodeMatchesAnimationSelector(mutation.target);
+    }
+
+    return Array.prototype.some.call(mutation.addedNodes, function (node) {
+      return nodeMatchesAnimationSelector(node);
+    });
+  }
 
   function watchForLatePaths() {
     if (
@@ -666,9 +701,17 @@
     document.documentElement.dataset[OBSERVER_READY_FLAG] = "true";
 
     var schedule;
-    var observer = new MutationObserver(function () {
+    var observer = new MutationObserver(function (mutations) {
+      var shouldInit = mutations.some(function (mutation) {
+        return mutationNeedsInit(mutation);
+      });
+
+      if (!shouldInit) {
+        return;
+      }
+
       window.clearTimeout(schedule);
-      schedule = window.setTimeout(initAll, 80);
+      schedule = window.setTimeout(initAll, 120);
     });
 
     observer.observe(document.documentElement, {

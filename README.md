@@ -350,6 +350,7 @@ Reveal attributes:
 - If static mode is too fast or slow, adjust `ms_path_duration`.
 - If scroll mode finishes too early, add class `msc-page` to the wrapper that contains all scroll sections.
 - If scroll mode feels stuttery only on a real phone, update to the latest script and confirm your path layer CSS includes `pointer-events: none;`. On touch devices, scroll paths draw as a normal trigger-based animation by default because continuous SVG stroke repainting can block native scrolling.
+- If scroll mode is smooth on one page but laggy on another, check for heavy embeds or components that constantly add DOM nodes. The script ignores unrelated DOM changes, but complex pages can still repaint more slowly while pinned or scrubbed SVG paths are active.
 - If the path appears behind the page background, set your section backgrounds to transparent or raise the path layer `z-index`.
 - If Webstudio content loads after the script, run `window.msPathRefresh()` from custom code.
 
