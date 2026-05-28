@@ -210,7 +210,7 @@ Scroll mode is still available by setting `ms_path_mode="scroll"` or by omitting
 - `ms_path_mobile_scrub="0.35"`: override touch-device smoothing when `ms_path_mobile_scroll="scrub"` and `ms_path_scrub="true"`.
 - `ms_path_trigger=".msc-page"`: the wrapper that controls the scroll range.
 - `ms-path-trigger=".msc-page"`: dashed alias for `ms_path_trigger`.
-- `ms_path_scroll_distance="1800"`: spreads the path draw over 1800px of scroll. Use this when the trigger section is short and the animation feels too fast.
+- `ms_path_scroll_distance="1800"`: spreads the path draw over 1800px of scroll. `1800px` also works. Use this when the trigger section is short and the animation feels too fast.
 - `ms-path-scroll-distance`: dashed alias for `ms_path_scroll_distance`.
 - `ms_path_pin="true"`: pins the trigger section while the scroll animation plays. This is useful when the section is visually short but the path needs more scroll room.
 - `ms_path_pin_spacing="false"`: disables the spacer ScrollTrigger adds for pinned sections. Leave this unset unless you intentionally want the following content to move underneath the pinned section.

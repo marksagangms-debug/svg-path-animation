@@ -138,14 +138,26 @@
   function readDistance(el, attrs) {
     var raw = readAttr(el, attrs);
     var value;
+    var match;
 
     if (raw === null || raw === "") {
       return null;
     }
 
+    raw = raw.trim();
+
+    if (/^\+=/.test(raw)) {
+      return raw;
+    }
+
     value = Number(raw);
     if (Number.isFinite(value)) {
       return "+=" + value;
+    }
+
+    match = raw.match(/^(\d+(?:\.\d+)?)(px|vh|vw|rem|em)$/);
+    if (match) {
+      return "+=" + raw;
     }
 
     return raw;
