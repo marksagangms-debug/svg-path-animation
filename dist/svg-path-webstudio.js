@@ -135,22 +135,6 @@
     return raw === null || raw === "" ? fallback : raw;
   }
 
-  function readDistance(el, attrs) {
-    var raw = readAttr(el, attrs);
-    var value;
-
-    if (raw === null || raw === "") {
-      return null;
-    }
-
-    value = Number(raw);
-    if (Number.isFinite(value)) {
-      return "+=" + value;
-    }
-
-    return raw;
-  }
-
   function readScrub(el, attrs, fallback) {
     var raw = readAttr(el, attrs);
     var value;
@@ -304,7 +288,6 @@
     var trigger = hasCustomTrigger
       ? resolveTarget(path, triggerSelector, getDefaultTrigger())
       : null;
-    var scrollDistance = readDistance(path, pathAttr("scroll-distance"));
     var mode = normalizeMode(
       readAttr(path, pathAttr("mode")) ||
         tokens.mode ||
@@ -327,8 +310,6 @@
       mobileScroll: normalizeMobileScroll(
         readString(path, pathAttr("mobile-scroll"), "play")
       ),
-      pin: readBoolean(path, pathAttr("pin"), false),
-      pinSpacing: readBoolean(path, pathAttr("pin-spacing"), true),
       start: readString(
         path,
         pathAttr("start"),
@@ -337,7 +318,7 @@
       end: readString(
         path,
         pathAttr("end"),
-        scrollDistance || (hasCustomTrigger ? "bottom bottom" : "max")
+        hasCustomTrigger ? "bottom bottom" : "max"
       ),
       duration: readNumber(
         path,
@@ -432,8 +413,6 @@
         scrub: options.scrub,
         mobileScroll: options.mobileScroll,
         mobilePlay: useMobilePlay,
-        pin: options.pin,
-        pinSpacing: options.pinSpacing,
         duration: options.duration,
         delay: options.delay,
         repeat: options.repeat,
@@ -483,8 +462,6 @@
           trigger: options.trigger || undefined,
           start: options.start,
           end: options.end,
-          pin: options.pin,
-          pinSpacing: options.pinSpacing,
           scrub: options.scrub,
           invalidateOnRefresh: true
         }
@@ -696,10 +673,6 @@
         "ms_path_trigger",
         "dv-path-trigger",
         "dv_path_trigger",
-        "ms-path-scroll-distance",
-        "ms_path_scroll_distance",
-        "dv-path-scroll-distance",
-        "dv_path_scroll_distance",
         "ms-path-mode",
         "ms_path_mode",
         "dv-path-mode",
